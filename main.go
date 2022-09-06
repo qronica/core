@@ -21,7 +21,22 @@ func main() {
 		log.Printf("Collection name: %s", collectionName) // still unsaved
 
 		if collectionName == "projects" {
-			return qronica.SideEffectAtNewProject(e, app.Dao())
+			return qronica.SideEffectAtNewProject(app.Dao(), e)
+		} else if collectionName == "resources" {
+			return qronica.SideEffectAtNewResource(app.Dao(), e)
+		}
+
+		return nil
+	})
+
+	app.OnRecordAfterUpdateRequest().Add(func(e *core.RecordUpdateEvent) error {
+		collectionName := e.Record.Collection().Name
+		log.Printf("Collection name: %s", collectionName) // still unsaved
+
+		if collectionName == "projects" {
+			return qronica.SideEffectAtUpdateProject(app.Dao(), e)
+		} else if collectionName == "resources" {
+			return qronica.SideEffectAtUpdateResource(app.Dao(), e)
 		}
 
 		return nil

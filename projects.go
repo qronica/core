@@ -40,7 +40,7 @@ func (qi *QronicaInstance) SideEffectAtNewProject(dao *daos.Dao, e *core.RecordC
 
 		projects = qi.extendProjectsOfResourceWithNewProject(projects, e.Record.Id)
 
-		log.Printf("adding project with id '%s'", e.Record.Id)
+		log.Printf("adding project with id '%s' to your resource '%s'", e.Record.Id, resID)
 		resource.SetDataValue("projects", projects)
 
 		if err := dao.Save(resource); err != nil {
@@ -50,4 +50,8 @@ func (qi *QronicaInstance) SideEffectAtNewProject(dao *daos.Dao, e *core.RecordC
 	}
 
 	return nil
+}
+
+func (qi *QronicaInstance) SideEffectAtUpdateProject(dao *daos.Dao, e *core.RecordUpdateEvent) error {
+	return qi.SideEffectAtNewProject(dao, &core.RecordCreateEvent{Record: e.Record})
 }

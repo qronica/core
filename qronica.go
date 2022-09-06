@@ -12,8 +12,8 @@ type QronicaInstance struct {
 	app *pocketbase.PocketBase
 
 	resourcesCollection *models.Collection
-	ProjectsCollection  *models.Collection
-	StudiesCollection   *models.Collection
+	projectsCollection  *models.Collection
+	// studiesCollection   *models.Collection
 }
 
 func NewQronica(app *pocketbase.PocketBase) (*QronicaInstance, error) {
@@ -36,6 +36,18 @@ func (qi *QronicaInstance) ResourcesCollection(dao *daos.Dao) *models.Collection
 	}
 
 	return qi.resourcesCollection
+}
+
+func (qi *QronicaInstance) ProjectsCollection(dao *daos.Dao) *models.Collection {
+	if qi.projectsCollection == nil {
+		projects, err := dao.FindCollectionByNameOrId("projects")
+		if err != nil {
+			log.Println("Projects collection not found", err)
+		}
+		qi.projectsCollection = projects
+	}
+
+	return qi.projectsCollection
 }
 
 // func (qi *QronicaInstance) HydrateCollections() {
