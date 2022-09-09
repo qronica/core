@@ -52,7 +52,8 @@ func (qi *QronicaInstance) SideEffectAtUpdateResource(kind UpdateRecordEventKind
 
 	if kind == BeforeEvent {
 		// save the stamp
-		qi.resourceStamps[e.Record.Id] = ResourceStamp{
+		log.Printf("saved stamp for resource '%s' with projects %v", resourceID, projects)
+		qi.resourceStamps[resourceID] = ResourceStamp{
 			at:       time.Now(),
 			projects: projects,
 		}
@@ -63,7 +64,13 @@ func (qi *QronicaInstance) SideEffectAtUpdateResource(kind UpdateRecordEventKind
 			return nil
 		}
 
-		_, removedProjects := lo.Difference(old.projects, projects)
+		log.Printf("recover stamp for resource '%s' with projects %v and old projects %v ", resourceID, projects, old.projects)
+
+		lo.Without(projects)
+		newProjects, removedProjects := lo.Difference(old.projects, projects)
+
+		log.Println(newProjects)
+		log.Println(removedProjects)
 
 		for _, projID := range removedProjects {
 			project, err := dao.FindRecordById(qi.ProjectsCollection(dao), projID, nil)

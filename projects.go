@@ -52,7 +52,7 @@ func (qi *QronicaInstance) SideEffectAtUpdateProject(kind UpdateRecordEventKind,
 
 	if kind == BeforeEvent {
 		// save the stamp
-		qi.projectStamps[e.Record.Id] = ProjectStamp{
+		qi.projectStamps[projectID] = ProjectStamp{
 			at:        time.Now(),
 			resources: resources,
 		}
