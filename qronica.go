@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"time"
 
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/daos"
@@ -14,11 +15,33 @@ type QronicaInstance struct {
 	resourcesCollection *models.Collection
 	projectsCollection  *models.Collection
 	// studiesCollection   *models.Collection
+
+	projectStamps  map[string]ProjectStamp // hash table to save the last state of updated projects
+	resourceStamps map[string]ResourceStamp
+}
+
+type UpdateRecordEventKind string
+
+const (
+	BeforeEvent UpdateRecordEventKind = "before"
+	AfterEvent  UpdateRecordEventKind = "after"
+)
+
+type ProjectStamp struct {
+	at        time.Time
+	resources []string
+}
+
+type ResourceStamp struct {
+	at       time.Time
+	projects []string
 }
 
 func NewQronica(app *pocketbase.PocketBase) (*QronicaInstance, error) {
 	return &QronicaInstance{
-		app: app,
+		app:            app,
+		projectStamps:  map[string]ProjectStamp{},
+		resourceStamps: map[string]ResourceStamp{},
 		// principalDAO:        dao,
 		// ResourcesCollection: resources,
 		// ProjectsCollection:  projects,

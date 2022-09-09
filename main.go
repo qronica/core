@@ -16,27 +16,55 @@ func main() {
 		log.Fatal(err)
 	}
 
-	app.OnRecordAfterCreateRequest().Add(func(e *core.RecordCreateEvent) error {
-		collectionName := e.Record.Collection().Name
-		log.Printf("Collection name: %s", collectionName) // still unsaved
+	// Projects
 
-		if collectionName == "projects" {
-			return qronica.SideEffectAtNewProject(app.Dao(), e)
-		} else if collectionName == "resources" {
-			return qronica.SideEffectAtNewResource(app.Dao(), e)
+	app.OnRecordAfterCreateRequest().Add(func(data *core.RecordCreateEvent) error {
+		log.Println("OnRecordAfterCreateRequest for [%s] %s", data.Record.Collection().Name, data.Record.Id)
+
+		if data.Record.Collection().Name == "projects" {
+			return qronica.SideEffectAtCreateProject(app.Dao(), data)
 		}
 
 		return nil
 	})
 
-	app.OnRecordAfterUpdateRequest().Add(func(e *core.RecordUpdateEvent) error {
-		collectionName := e.Record.Collection().Name
-		log.Printf("Collection name: %s", collectionName) // still unsaved
+	app.OnRecordBeforeUpdateRequest().Add(func(data *core.RecordUpdateEvent) error {
+		if data.Record.Collection().Name == "projects" {
+			return qronica.SideEffectAtUpdateProject(BeforeEvent, app.Dao(), data)
+		}
 
-		if collectionName == "projects" {
-			return qronica.SideEffectAtUpdateProject(app.Dao(), e)
-		} else if collectionName == "resources" {
-			return qronica.SideEffectAtUpdateResource(app.Dao(), e)
+		return nil
+	})
+
+	app.OnRecordAfterUpdateRequest().Add(func(data *core.RecordUpdateEvent) error {
+		if data.Record.Collection().Name == "projects" {
+			return qronica.SideEffectAtUpdateProject(AfterEvent, app.Dao(), data)
+		}
+
+		return nil
+	})
+
+	// Resources
+
+	app.OnRecordAfterCreateRequest().Add(func(data *core.RecordCreateEvent) error {
+		if data.Record.Collection().Name == "resources" {
+			return qronica.SideEffectAtNewResource(app.Dao(), data)
+		}
+
+		return nil
+	})
+
+	app.OnRecordBeforeUpdateRequest().Add(func(data *core.RecordUpdateEvent) error {
+		if data.Record.Collection().Name == "resources" {
+			return qronica.SideEffectAtUpdateResource(BeforeEvent, app.Dao(), data)
+		}
+
+		return nil
+	})
+
+	app.OnRecordAfterUpdateRequest().Add(func(data *core.RecordUpdateEvent) error {
+		if data.Record.Collection().Name == "resources" {
+			return qronica.SideEffectAtUpdateResource(AfterEvent, app.Dao(), data)
 		}
 
 		return nil
