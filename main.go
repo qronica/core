@@ -16,14 +16,18 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Projects
-
 	app.OnRecordAfterCreateRequest().Add(func(data *core.RecordCreateEvent) error {
 		if data.Record.Collection().Name == "projects" {
-			log.Printf("SideEffectAtCreateProject for [%s] %s", data.Record.Collection().Name, data.Record.Id)
+			// log.Printf("SideEffectAtCreateProject for [%s] %s", data.Record.Collection().Name, data.Record.Id)
 			return qronica.SideEffectAtCreateProject(app.Dao(), data)
-		} else if data.Record.Collection().Name == "resources" {
-			log.Printf("SideEffectAtNewResource for [%s] %s", data.Record.Collection().Name, data.Record.Id)
+		}
+
+		return nil
+	})
+
+	app.OnRecordAfterCreateRequest().Add(func(data *core.RecordCreateEvent) error {
+		if data.Record.Collection().Name == "resources" {
+			// log.Printf("SideEffectAtNewResource for [%s] %s", data.Record.Collection().Name, data.Record.Id)
 			return qronica.SideEffectAtNewResource(app.Dao(), data)
 		}
 
@@ -32,11 +36,17 @@ func main() {
 
 	app.OnRecordBeforeUpdateRequest().Add(func(data *core.RecordUpdateEvent) error {
 		if data.Record.Collection().Name == "projects" {
-			log.Printf("SideEffectAtUpdateProject(BeforeEvent) for [%s] %s", data.Record.Collection().Name, data.Record.Id)
+			// log.Printf("SideEffectAtUpdateProject(BeforeEvent) for [%s] %s", data.Record.Collection().Name, data.Record.Id)
 			return qronica.SideEffectAtUpdateProject(BeforeEvent, app.Dao(), data)
-		} else if data.Record.Collection().Name == "resources" {
-			log.Printf("SideEffectAtUpdateResource(Before) for [%s] %s", data.Record.Collection().Name, data.Record.Id)
-			log.Printf("%+v", data.Record.Data())
+		}
+
+		return nil
+	})
+
+	app.OnRecordBeforeUpdateRequest().Add(func(data *core.RecordUpdateEvent) error {
+		if data.Record.Collection().Name == "resources" {
+			// log.Printf("SideEffectAtUpdateResource(Before) for [%s] %s", data.Record.Collection().Name, data.Record.Id)
+			// log.Printf("%+v", data.Record.Data())
 			return qronica.SideEffectAtUpdateResource(BeforeEvent, app.Dao(), data)
 		}
 
@@ -45,11 +55,17 @@ func main() {
 
 	app.OnRecordAfterUpdateRequest().Add(func(data *core.RecordUpdateEvent) error {
 		if data.Record.Collection().Name == "projects" {
-			log.Printf("SideEffectAtUpdateProject(After) for [%s] %s", data.Record.Collection().Name, data.Record.Id)
+			// log.Printf("SideEffectAtUpdateProject(After) for [%s] %s", data.Record.Collection().Name, data.Record.Id)
 			return qronica.SideEffectAtUpdateProject(AfterEvent, app.Dao(), data)
-		} else if data.Record.Collection().Name == "resources" {
-			log.Printf("SideEffectAtUpdateResource(After) for [%s] %s", data.Record.Collection().Name, data.Record.Id)
-			log.Printf("%+v", data.Record.Data())
+		}
+
+		return nil
+	})
+
+	app.OnRecordAfterUpdateRequest().Add(func(data *core.RecordUpdateEvent) error {
+		if data.Record.Collection().Name == "resources" {
+			// log.Printf("SideEffectAtUpdateResource(After) for [%s] %s", data.Record.Collection().Name, data.Record.Id)
+			// log.Printf("%+v", data.Record.Data())
 			return qronica.SideEffectAtUpdateResource(AfterEvent, app.Dao(), data)
 		}
 

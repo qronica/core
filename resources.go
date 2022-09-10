@@ -12,7 +12,6 @@ import (
 func (qi *QronicaInstance) SideEffectAtNewResource(dao *daos.Dao, e *core.RecordCreateEvent) error {
 	data := e.Record.Data()
 	projects, _ := data["projects"].([]string)
-	log.Println(data)
 	resourceID := e.Record.Id
 
 	// for each resource, add the project to the list of its owns projects
@@ -28,14 +27,6 @@ func (qi *QronicaInstance) SideEffectAtNewResource(dao *daos.Dao, e *core.Record
 			continue
 		}
 
-		// projectRecData := project.Data()
-		// resources, _ := projectRecData["resources"].([]string)
-		// log.Println(projectRecData)
-
-		// resources = lo.Union(resources, []string{e.Record.Id})
-
-		// log.Printf("adding resource with id '%s' to your project '%s'", e.Record.Id, projectID)
-		// project.SetDataValue("resources", resources)
 		project = extendRelationFromRecord(project, "resources", resourceID)
 
 		if err := dao.SaveRecord(project); err != nil {
@@ -65,7 +56,7 @@ func (qi *QronicaInstance) SideEffectAtUpdateResource(kind UpdateRecordEventKind
 
 	if kind == BeforeEvent {
 		// save the stamp
-		log.Printf("saved stamp for resource '%s' with projects %v", resourceID, projects)
+		// log.Printf("saved stamp for resource '%s' with projects %v", resourceID, projects)
 		qi.resourceStamps[resourceID] = ResourceStamp{
 			at:       time.Now(),
 			projects: projects,
@@ -77,13 +68,9 @@ func (qi *QronicaInstance) SideEffectAtUpdateResource(kind UpdateRecordEventKind
 			return nil
 		}
 
-		log.Printf("recover stamp for resource '%s' with projects %v and old projects %v ", resourceID, projects, old.projects)
+		// log.Printf("recover stamp for resource '%s' with projects %v and old projects %v ", resourceID, projects, old.projects)
 
-		// lo.Without(projects)
 		removedProjects, newProjects := lo.Difference(old.projects, projects)
-
-		log.Println(newProjects)
-		log.Println(removedProjects)
 
 		for _, projID := range removedProjects {
 			project, err := dao.FindRecordById(qi.ProjectsCollection(dao), projID, nil)
@@ -92,12 +79,6 @@ func (qi *QronicaInstance) SideEffectAtUpdateResource(kind UpdateRecordEventKind
 				continue
 			}
 
-			// projRecData := project.Data()
-			// resources, _ := projRecData["resources"].([]string)
-
-			// newResources := lo.Without(resources, resourceID)
-
-			// project.SetDataValue("resources", newResources)
 			project = removeRelationFromRecord(project, "resources", resourceID)
 
 			if err := dao.SaveRecord(project); err != nil {
@@ -112,13 +93,6 @@ func (qi *QronicaInstance) SideEffectAtUpdateResource(kind UpdateRecordEventKind
 				log.Println("Resource not found")
 				continue
 			}
-
-			// projRecData := project.Data()
-			// resources, _ := projRecData["resources"].([]string)
-
-			// newResources := lo.Union(resources, []string{resourceID})
-
-			// project.SetDataValue("resources", newResources)
 
 			project = extendRelationFromRecord(project, "resources", resourceID)
 

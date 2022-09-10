@@ -12,7 +12,6 @@ import (
 func (qi *QronicaInstance) SideEffectAtCreateProject(dao *daos.Dao, e *core.RecordCreateEvent) error {
 	data := e.Record.Data()
 	resources, _ := data["resources"].([]string)
-	log.Println(data)
 
 	projectID := e.Record.Id
 
@@ -28,15 +27,6 @@ func (qi *QronicaInstance) SideEffectAtCreateProject(dao *daos.Dao, e *core.Reco
 			log.Println("Resource not found")
 			continue
 		}
-
-		// resRecData := resource.Data()
-		// projects, _ := resRecData["projects"].([]string)
-		// log.Println(resRecData)
-
-		// projects = lo.Union(projects, []string{e.Record.Id})
-
-		// log.Printf("adding project with id '%s' to your resource '%s'", e.Record.Id, resID)
-		// resource.SetDataValue("projects", projects)
 
 		resource = extendRelationFromRecord(resource, "projects", projectID)
 		if err := dao.SaveRecord(resource); err != nil {

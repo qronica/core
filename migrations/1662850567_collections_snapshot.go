@@ -16,7 +16,7 @@ func init() {
 			{
 				"id": "lvttbwx1jksy9nz",
 				"created": "2022-09-01 19:01:25.230",
-				"updated": "2022-09-01 19:17:12.662",
+				"updated": "2022-09-09 01:47:13.416",
 				"name": "projects",
 				"system": false,
 				"schema": [
@@ -91,9 +91,134 @@ func init() {
 				"deleteRule": null
 			},
 			{
+				"id": "rwskiv5gp4socah",
+				"created": "2022-09-01 19:16:38.039",
+				"updated": "2022-09-09 01:49:50.608",
+				"name": "resources",
+				"system": false,
+				"schema": [
+					{
+						"system": false,
+						"id": "q0rrwjoo",
+						"name": "name",
+						"type": "text",
+						"required": true,
+						"unique": false,
+						"options": {
+							"min": null,
+							"max": null,
+							"pattern": ""
+						}
+					},
+					{
+						"system": false,
+						"id": "9itgclqj",
+						"name": "kind",
+						"type": "select",
+						"required": true,
+						"unique": false,
+						"options": {
+							"maxSelect": 1,
+							"values": [
+								"document",
+								"text",
+								"sound",
+								"image",
+								"video"
+							]
+						}
+					},
+					{
+						"system": false,
+						"id": "qa5b93mr",
+						"name": "file",
+						"type": "file",
+						"required": false,
+						"unique": false,
+						"options": {
+							"maxSelect": 1,
+							"maxSize": 5242880,
+							"mimeTypes": [],
+							"thumbs": [
+								"0x100"
+							]
+						}
+					},
+					{
+						"system": false,
+						"id": "fr14acfo",
+						"name": "text",
+						"type": "text",
+						"required": false,
+						"unique": false,
+						"options": {
+							"min": null,
+							"max": null,
+							"pattern": ""
+						}
+					},
+					{
+						"system": false,
+						"id": "heklyfxk",
+						"name": "link",
+						"type": "url",
+						"required": false,
+						"unique": false,
+						"options": {
+							"exceptDomains": [],
+							"onlyDomains": []
+						}
+					},
+					{
+						"system": false,
+						"id": "juemaxkp",
+						"name": "projects",
+						"type": "relation",
+						"required": false,
+						"unique": false,
+						"options": {
+							"maxSelect": 99999,
+							"collectionId": "lvttbwx1jksy9nz",
+							"cascadeDelete": false
+						}
+					},
+					{
+						"system": false,
+						"id": "hetxqzoy",
+						"name": "parents",
+						"type": "relation",
+						"required": false,
+						"unique": false,
+						"options": {
+							"maxSelect": 99999,
+							"collectionId": "rwskiv5gp4socah",
+							"cascadeDelete": false
+						}
+					},
+					{
+						"system": false,
+						"id": "ru18pot3",
+						"name": "children",
+						"type": "relation",
+						"required": false,
+						"unique": false,
+						"options": {
+							"maxSelect": 99999,
+							"collectionId": "rwskiv5gp4socah",
+							"cascadeDelete": false
+						}
+					}
+				],
+				"listRule": null,
+				"viewRule": null,
+				"createRule": null,
+				"updateRule": null,
+				"deleteRule": null
+			},
+			{
 				"id": "systemprofiles0",
-				"created": "2022-09-01 19:11:10.785",
-				"updated": "2022-09-01 19:11:10.786",
+				"created": "2022-09-09 01:47:13.414",
+				"updated": "2022-09-09 01:47:13.416",
 				"name": "profiles",
 				"system": true,
 				"schema": [
@@ -147,106 +272,6 @@ func init() {
 				"viewRule": "userId = @request.user.id",
 				"createRule": "userId = @request.user.id",
 				"updateRule": "userId = @request.user.id",
-				"deleteRule": null
-			},
-			{
-				"id": "rwskiv5gp4socah",
-				"created": "2022-09-01 19:16:38.039",
-				"updated": "2022-09-01 19:18:14.705",
-				"name": "resources",
-				"system": false,
-				"schema": [
-					{
-						"system": false,
-						"id": "q0rrwjoo",
-						"name": "name",
-						"type": "text",
-						"required": true,
-						"unique": false,
-						"options": {
-							"min": null,
-							"max": null,
-							"pattern": ""
-						}
-					},
-					{
-						"system": false,
-						"id": "9itgclqj",
-						"name": "kind",
-						"type": "select",
-						"required": true,
-						"unique": false,
-						"options": {
-							"maxSelect": 1,
-							"values": [
-								"handwritting",
-								"text",
-								"sound",
-								"image",
-								"video",
-								"idea"
-							]
-						}
-					},
-					{
-						"system": false,
-						"id": "qa5b93mr",
-						"name": "file",
-						"type": "file",
-						"required": false,
-						"unique": false,
-						"options": {
-							"maxSelect": 1,
-							"maxSize": 5242880,
-							"mimeTypes": [],
-							"thumbs": [
-								"0x100"
-							]
-						}
-					},
-					{
-						"system": false,
-						"id": "fr14acfo",
-						"name": "text",
-						"type": "text",
-						"required": false,
-						"unique": false,
-						"options": {
-							"min": null,
-							"max": null,
-							"pattern": ""
-						}
-					},
-					{
-						"system": false,
-						"id": "heklyfxk",
-						"name": "link",
-						"type": "url",
-						"required": false,
-						"unique": false,
-						"options": {
-							"exceptDomains": [],
-							"onlyDomains": []
-						}
-					},
-					{
-						"system": false,
-						"id": "juemaxkp",
-						"name": "project",
-						"type": "relation",
-						"required": false,
-						"unique": false,
-						"options": {
-							"maxSelect": 1,
-							"collectionId": "lvttbwx1jksy9nz",
-							"cascadeDelete": false
-						}
-					}
-				],
-				"listRule": null,
-				"viewRule": null,
-				"createRule": null,
-				"updateRule": null,
 				"deleteRule": null
 			}
 		]`
