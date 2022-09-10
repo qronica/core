@@ -14,6 +14,8 @@ func (qi *QronicaInstance) SideEffectAtCreateProject(dao *daos.Dao, e *core.Reco
 	resources, _ := data["resources"].([]string)
 	log.Println(data)
 
+	projectID := e.Record.Id
+
 	// for each resource, add the project to the list of its owns projects
 	for _, resID := range resources {
 		if resID == "" {
@@ -27,15 +29,16 @@ func (qi *QronicaInstance) SideEffectAtCreateProject(dao *daos.Dao, e *core.Reco
 			continue
 		}
 
-		resRecData := resource.Data()
-		projects, _ := resRecData["projects"].([]string)
-		log.Println(resRecData)
+		// resRecData := resource.Data()
+		// projects, _ := resRecData["projects"].([]string)
+		// log.Println(resRecData)
 
-		projects = lo.Union(projects, []string{e.Record.Id})
+		// projects = lo.Union(projects, []string{e.Record.Id})
 
-		log.Printf("adding project with id '%s' to your resource '%s'", e.Record.Id, resID)
-		resource.SetDataValue("projects", projects)
+		// log.Printf("adding project with id '%s' to your resource '%s'", e.Record.Id, resID)
+		// resource.SetDataValue("projects", projects)
 
+		resource = extendRelationFromRecord(resource, "projects", projectID)
 		if err := dao.SaveRecord(resource); err != nil {
 			log.Println("Resource update failed")
 			continue
