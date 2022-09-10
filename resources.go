@@ -46,9 +46,15 @@ func (qi *QronicaInstance) SideEffectAtNewResource(dao *daos.Dao, e *core.Record
 }
 
 func (qi *QronicaInstance) SideEffectAtUpdateResource(kind UpdateRecordEventKind, dao *daos.Dao, e *core.RecordUpdateEvent) error {
-	data := e.Record.Data()
 	resourceID := e.Record.Id
-	projects, _ := data["projects"].([]string)
+
+	oldResource, err := dao.FindRecordById(qi.ResourcesCollection(dao), resourceID, nil)
+	if err != nil {
+		log.Println("Resource not found")
+		return nil
+	}
+
+	projects, _ := oldResource.Data()["projects"].([]string)
 
 	if kind == BeforeEvent {
 		// save the stamp
@@ -66,8 +72,8 @@ func (qi *QronicaInstance) SideEffectAtUpdateResource(kind UpdateRecordEventKind
 
 		log.Printf("recover stamp for resource '%s' with projects %v and old projects %v ", resourceID, projects, old.projects)
 
-		lo.Without(projects)
-		newProjects, removedProjects := lo.Difference(old.projects, projects)
+		// lo.Without(projects)
+		removedProjects, newProjects := lo.Difference(old.projects, projects)
 
 		log.Println(newProjects)
 		log.Println(removedProjects)
@@ -79,14 +85,37 @@ func (qi *QronicaInstance) SideEffectAtUpdateResource(kind UpdateRecordEventKind
 				continue
 			}
 
-			projRecData := project.Data()
-			resources, _ := projRecData["resources"].([]string)
+			// projRecData := project.Data()
+			// resources, _ := projRecData["resources"].([]string)
 
-			newResources := lo.Without(resources, resourceID)
+			// newResources := lo.Without(resources, resourceID)
 
-			project.SetDataValue("resources", newResources)
+			// project.SetDataValue("resources", newResources)
+			project = removeRelationFromRecord(project, "resources", resourceID)
 
-			if err := dao.Save(project); err != nil {
+			if err := dao.SaveRecord(project); err != nil {
+				log.Println("Resource update failed")
+				continue
+			}
+		}
+
+		for _, projID := range newProjects {
+			project, err := dao.FindRecordById(qi.ProjectsCollection(dao), projID, nil)
+			if err != nil {
+				log.Println("Resource not found")
+				continue
+			}
+
+			// projRecData := project.Data()
+			// resources, _ := projRecData["resources"].([]string)
+
+			// newResources := lo.Union(resources, []string{resourceID})
+
+			// project.SetDataValue("resources", newResources)
+
+			project = extendRelationFromRecord(project, "resources", resourceID)
+
+			if err := dao.SaveRecord(project); err != nil {
 				log.Println("Resource update failed")
 				continue
 			}
