@@ -15,8 +15,6 @@ $ git clone https://github.com/qronica/core.git
 $ go build -o qronica . && ./qronica serve
 ```
 
-
-
 ## Collaboration
 If you want to collaborate with this project, you can do it in the following ways:
 
